@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Let's Get Together</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: #f2fafa; color: #1a2e2e; min-height: 100vh; }
+.header { background: #0c6982; padding: 1.5rem 1.25rem 1.25rem; text-align: center; }
+.header-title { font-family: 'Bebas Neue', sans-serif; font-size: 38px; color: #fff; line-height: 1; letter-spacing: 1px; }
+.header-sub { font-size: 14px; color: rgba(255,255,255,0.7); margin-top: 6px; font-weight: 300; }
+.header-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+.tab-bar { display: flex; gap: 0; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 3px; margin: 12px auto 0; width: fit-content; }
+.tab { font-size: 12px; font-weight: 500; padding: 6px 14px; border-radius: 6px; color: rgba(255,255,255,0.7); cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
+.tab.active { background: #fff; color: #0c6982; }
+.view { display: none; }
+.view.active { display: block; }
+.container { max-width: 620px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+.card { background: #fff; border-radius: 12px; border: 1.5px solid #dff1f2; padding: 1.5rem; margin-bottom: 1rem; }
+.card-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 1px; color: #0c6982; margin-bottom: 1rem; }
+label { display: block; font-size: 13px; font-weight: 500; color: #3d5a5a; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+input[type="text"], input[type="date"], input[type="time"], textarea { width: 100%; padding: 10px 14px; border: 1.5px solid #d0e8e8; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 15px; color: #1a2e2e; background: #f2fafa; outline: none; }
+input:focus, textarea:focus { border-color: #2cd4bb; background: #fff; }
+.field { margin-bottom: 1rem; }
+.slot-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; margin-bottom: 10px; }
+.btn-primary { display: block; width: 100%; padding: 14px; background: #2cd4bb; color: #0c6982; border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 0.5rem; }
+.btn-primary:hover { background: #24bda7; }
+.btn-primary:disabled { background: #a0e0d8; cursor: not-allowed; }
+.btn-secondary { display: inline-flex; align-items: center; justify-content: center; padding: 10px 16px; background: #dff1f2; color: #278788; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
+.btn-remove { background: none; color: #6b8a8a; border: 1.5px solid #d0e8e8; border-radius: 8px; padding: 10px 12px; font-size: 18px; cursor: pointer; line-height: 1; }
+.btn-remove:hover { border-color: #e88; color: #c55; }
+.add-slot-btn { background: none; border: 1.5px dashed #278788; color: #278788; border-radius: 8px; padding: 10px; width: 100%; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 6px; }
+.add-slot-btn:hover { background: #dff1f2; }
+.slot-count-note { font-size: 12px; color: #6b8a8a; text-align: right; margin-top: 4px; }
+.link-box { background: #dff1f2; border: 1.5px solid #278788; border-radius: 8px; padding: 12px 14px; font-size: 14px; color: #0c6982; word-break: break-all; margin-bottom: 10px; }
+.copy-btn { background: #0c6982; color: #fff; border: none; border-radius: 8px; padding: 9px 18px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; margin-right: 8px; margin-bottom: 8px; }
+.copy-btn:hover { background: #278788; }
+.alert { padding: 10px 14px; border-radius: 8px; font-size: 14px; margin-bottom: 10px; }
+.alert-success { background: #e6faf5; border: 1.5px solid #2cd4bb; color: #0c6982; }
+.alert-error { background: #fef0f0; border: 1.5px solid #f5b8b8; color: #8b3030; }
+.info-note { font-size: 13px; color: #6b8a8a; line-height: 1.6; margin-bottom: 1rem; }
+.event-banner { background: #0c6982; color: #fff; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
+.event-name { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin-bottom: 4px; }
+.event-desc { font-size: 14px; color: rgba(255,255,255,0.75); font-weight: 300; line-height: 1.5; white-space: pre-line; }
+.slot-option { display: flex; align-items: center; gap: 14px; background: #fff; border: 1.5px solid #d0e8e8; border-radius: 8px; padding: 14px 16px; margin-bottom: 8px; cursor: pointer; user-select: none; }
+.slot-option:hover { border-color: #2cd4bb; background: #dff1f2; }
+.slot-option.selected { border-color: #2cd4bb; background: #dff1f2; }
+.slot-checkbox { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #d0e8e8; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; color: transparent; }
+.slot-option.selected .slot-checkbox { background: #2cd4bb; border-color: #2cd4bb; color: #fff; }
+.slot-label { font-size: 15px; font-weight: 500; }
+.name-field { background: #fff; border: 1.5px solid #dff1f2; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+.submit-note { font-size: 13px; color: #6b8a8a; text-align: center; margin-top: 0.75rem; line-height: 1.5; }
+.result-slot { background: #fff; border: 1.5px solid #d0e8e8; border-radius: 8px; padding: 14px 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 14px; }
+.result-slot.winner { border-color: #ffac47; background: #fffbf3; }
+.vote-count { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: #278788; min-width: 36px; text-align: center; line-height: 1; }
+.result-slot.winner .vote-count { color: #ffac47; }
+.vote-bar-wrap { flex: 1; }
+.vote-bar-label { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+.vote-bar { height: 6px; background: #dff1f2; border-radius: 99px; overflow: hidden; }
+.vote-bar-fill { height: 100%; background: #2cd4bb; border-radius: 99px; }
+.result-slot.winner .vote-bar-fill { background: #ffac47; }
+.voter-names { font-size: 12px; color: #6b8a8a; margin-top: 3px; }
+.winner-badge { background: #ffac47; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+.thank-you { background: #0c6982; color: #fff; border-radius: 12px; padding: 2rem 1.5rem; text-align: center; margin-bottom: 1.25rem; }
+.thank-you h2 { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 1px; margin-bottom: 8px; }
+.thank-you p { font-size: 15px; color: rgba(255,255,255,0.8); font-weight: 300; line-height: 1.6; }
+.section-label { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 2px; color: #6b8a8a; text-transform: uppercase; margin-bottom: 0.75rem; }
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-screen { text-align: center; padding: 3rem 1rem; color: #6b8a8a; }
+.loading-screen .spinner { border-color: rgba(12,105,130,0.3); border-top-color: #0c6982; width: 32px; height: 32px; }
+</style>
+</head>
+<body>
+
+<!-- HOST VIEW -->
+<div id="view-host" class="view">
+  <div class="header">
+    <span class="header-icon">☕</span>
+    <div class="header-title">Let's Get Together</div>
+    <div class="header-sub">Create your event and share with your travelers</div>
+    <div class="tab-bar">
+      <div class="tab active" id="tab-create-btn" onclick="switchTab('create')">Create Event</div>
+      <div class="tab" id="tab-manage-btn" onclick="switchTab('manage')">My Events</div>
+    </div>
+  </div>
+  <div class="container">
+    <div id="tab-create">
+      <div class="card">
+        <div class="card-title">Event Details</div>
+        <div class="field">
+          <label>Event Name</label>
+          <input type="text" id="event-name" placeholder="Coffee with Kristin — Phoenix Meetup" maxlength="80">
+        </div>
+        <div class="field">
+          <label>Location or Meeting Spot</label>
+          <input type="text" id="event-location" placeholder="Cartel Coffee Lab, Tempe AZ">
+        </div>
+        <div class="field">
+          <label>A note for your travelers (optional)</label>
+          <textarea id="event-desc" rows="3" placeholder="Hey! Pick every time that could work — I'll choose the slot that works for the most people."></textarea>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Time Slots</div>
+        <p class="info-note">Add up to 10 options. Spread them over several weeks so night shifters have real choices.</p>
+        <div id="slots-container"></div>
+        <div class="slot-count-note" id="slot-count">0 of 10 slots added</div>
+        <button class="add-slot-btn" id="add-slot-btn" onclick="addSlot()">+ Add a Time Slot</button>
+      </div>
+      <div id="create-alert"></div>
+      <button class="btn-primary" id="create-btn" onclick="buildEvent()">Generate My Scheduling Links ☕</button>
+    </div>
+    <div id="tab-manage" style="display:none;">
+      <div class="card">
+        <div class="card-title">Your Events</div>
+        <div id="events-list"><p class="info-note">No events saved in this browser yet.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LINKS VIEW -->
+<div id="view-links" class="view">
+  <div class="header">
+    <span class="header-icon">✅</span>
+    <div class="header-title">Event Created!</div>
+    <div class="header-sub">Share the voter link with your travelers</div>
+  </div>
+  <div class="container">
+    <div class="card">
+      <div class="card-title">Voter Link — Send This to Your Travelers</div>
+      <p class="info-note">Copy this and text or email it. They tap it, pick their times, and submit. No app needed.</p>
+      <div class="link-box" id="voter-link-display"></div>
+      <button class="copy-btn" onclick="copyVoterLink()">Copy Voter Link</button>
+      <button class="copy-btn" onclick="copyResultsLink()">Copy Results Link (for you)</button>
+    </div>
+    <div id="copy-alert"></div>
+    <div class="card">
+      <div class="card-title">Ready-to-Send Text</div>
+      <div class="link-box" id="text-template" style="line-height:1.7; white-space:pre-line;"></div>
+      <button class="copy-btn" onclick="copyTemplate()">Copy Text Message</button>
+    </div>
+    <div style="text-align:center; margin-top:1.5rem;">
+      <button class="btn-secondary" onclick="goHome()">Create Another Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- VOTER VIEW -->
+<div id="view-voter" class="view">
+  <div class="header">
+    <span class="header-icon">☕</span>
+    <div class="header-title">Let's Get Together</div>
+    <div class="header-sub">Check every time that works for you</div>
+  </div>
+  <div class="container">
+    <div id="voter-loading" class="loading-screen">
+      <div class="spinner" style="display:block; margin:0 auto 1rem;"></div>
+      <p>Loading your event...</p>
+    </div>
+    <div id="voter-content" style="display:none;">
+      <div class="event-banner">
+        <div class="event-name" id="voter-event-name"></div>
+        <div class="event-desc" id="voter-event-desc"></div>
+      </div>
+      <p class="info-note">Select <strong>every</strong> time that could work. More picks = better chance of a match!</p>
+      <div id="voter-slots"></div>
+      <div class="name-field">
+        <label>Your First Name</label>
+        <input type="text" id="voter-name" placeholder="Sarah" maxlength="40">
+      </div>
+      <div id="voter-alert"></div>
+      <button class="btn-primary" id="submit-btn" onclick="submitVote()">Submit My Availability ☕</button>
+      <p class="submit-note">The host will pick the best time and reach out to confirm.</p>
+    </div>
+    <div id="voter-error" style="display:none;">
+      <div class="card"><p class="info-note" style="color:#8b3030;">This event could not be found. It may have been deleted or the link may be incorrect.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- THANKS VIEW -->
+<div id="view-thanks" class="view">
+  <div class="header">
+    <span class="header-icon">🎉</span>
+    <div class="header-title">You're In!</div>
+  </div>
+  <div class="container">
+    <div class="thank-you">
+      <h2>Thanks, <span id="thanks-name"></span>!</h2>
+      <p>Your availability has been submitted. Watch for a message confirming the time!</p>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS VIEW -->
+<div id="view-results" class="view">
+  <div class="header">
+    <span class="header-icon">📊</span>
+    <div class="header-title">Results</div>
+    <div class="header-sub" id="results-event-name"></div>
+  </div>
+  <div class="container">
+    <div id="results-loading" class="loading-screen">
+      <div class="spinner" style="display:block; margin:0 auto 1rem;"></div>
+      <p>Loading results...</p>
+    </div>
+    <div id="results-content" style="display:none;">
+      <div class="card">
+        <div class="card-title">Who Has Responded</div>
+        <div id="results-voters"></div>
+      </div>
+      <p class="section-label">Ranked by Availability</p>
+      <div id="results-slots"></div>
+      <div class="card" style="margin-top:1rem;">
+        <div class="card-title">Delete This Event</div>
+        <p class="info-note" style="margin-bottom:0.75rem;">Once you have confirmed the date, delete this event to keep things tidy.</p>
+        <button class="btn-secondary" style="color:#c55;" onclick="removeEvent()">Delete Event</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var API = '/.netlify/functions/events';
+var currentEventId = null;
+var localKey = 'lgt_my_events';
+
+function getBaseUrl() {
+  return window.location.protocol + '//' + window.location.host + window.location.pathname;
+}
+
+function makeId() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}
+
+function showView(name) {
+  var all = document.querySelectorAll('.view');
+  for (var i = 0; i < all.length; i++) all[i].classList.remove('active');
+  document.getElementById('view-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// Local index of your own events (just IDs + names for the My Events tab)
+function getLocalIndex() {
+  try { return JSON.parse(localStorage.getItem(localKey)) || []; }
+  catch(e) { return []; }
+}
+
+function addToLocalIndex(id, name) {
+  var idx = getLocalIndex();
+  idx.push({ id: id, name: name });
+  localStorage.setItem(localKey, JSON.stringify(idx));
+}
+
+function removeFromLocalIndex(id) {
+  var idx = getLocalIndex().filter(function(e) { return e.id !== id; });
+  localStorage.setItem(localKey, JSON.stringify(idx));
+}
+
+function switchTab(tab) {
+  document.getElementById('tab-create').style.display = tab === 'create' ? 'block' : 'none';
+  document.getElementById('tab-manage').style.display = tab === 'manage' ? 'block' : 'none';
+  document.getElementById('tab-create-btn').className = 'tab' + (tab === 'create' ? ' active' : '');
+  document.getElementById('tab-manage-btn').className = 'tab' + (tab === 'manage' ? ' active' : '');
+  if (tab === 'manage') renderManage();
+}
+
+function renderManage() {
+  var idx = getLocalIndex();
+  var el = document.getElementById('events-list');
+  if (idx.length === 0) {
+    el.innerHTML = '<p class="info-note">No events created from this browser yet.</p>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < idx.length; i++) {
+    var ev = idx[i];
+    html += '<div style="padding:12px 0; border-bottom:1px solid #dff1f2;">';
+    html += '<div style="font-weight:600; font-size:15px; margin-bottom:8px;">' + ev.name + '</div>';
+    html += '<button class="copy-btn" style="font-size:12px; padding:6px 12px;" onclick="manCopyVoter(\'' + ev.id + '\')">Copy Voter Link</button>';
+    html += '<button class="copy-btn" style="font-size:12px; padding:6px 12px;" onclick="manViewResults(\'' + ev.id + '\')">View Results</button>';
+    html += '<button class="copy-btn" style="font-size:12px; padding:6px 12px; background:#fff; border:1.5px solid #d0e8e8; color:#c55;" onclick="manDelete(\'' + ev.id + '\')">Delete</button>';
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function manCopyVoter(id) {
+  var url = getBaseUrl() + '?e=' + id + '&v=vote';
+  navigator.clipboard.writeText(url).then(function() { alert('Voter link copied!'); });
+}
+
+function manViewResults(id) {
+  loadResults(id);
+}
+
+function manDelete(id) {
+  if (!confirm('Delete this event? Your travelers will no longer be able to vote.')) return;
+  fetch(API + '?id=' + id, { method: 'DELETE' }).then(function() {
+    removeFromLocalIndex(id);
+    renderManage();
+  });
+}
+
+function addSlot() {
+  var container = document.getElementById('slots-container');
+  var existing = container.querySelectorAll('.slot-row');
+  if (existing.length >= 10) return;
+  var row = document.createElement('div');
+  row.className = 'slot-row';
+  row.innerHTML = '<div><label>Date</label><input type="date" class="slot-date"></div>' +
+    '<div><label>Time</label><input type="time" class="slot-time"></div>' +
+    '<button class="btn-remove" type="button" onclick="this.closest(\'.slot-row\').remove(); updateCount();">×</button>';
+  container.appendChild(row);
+  updateCount();
+}
+
+function updateCount() {
+  var n = document.querySelectorAll('#slots-container .slot-row').length;
+  document.getElementById('slot-count').textContent = n + ' of 10 slots added';
+  document.getElementById('add-slot-btn').style.display = n >= 10 ? 'none' : 'block';
+}
+
+function formatLabel(dateStr, timeStr) {
+  var parts = dateStr.split('-');
+  var d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+  var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var tp = timeStr.split(':');
+  var h = parseInt(tp[0]);
+  var m = tp[1];
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return days[d.getDay()] + ', ' + months[d.getMonth()] + ' ' + d.getDate() + ' at ' + h + ':' + m + ' ' + ampm;
+}
+
+function buildEvent() {
+  var name = document.getElementById('event-name').value.trim();
+  var location = document.getElementById('event-location').value.trim();
+  var desc = document.getElementById('event-desc').value.trim();
+  var alertEl = document.getElementById('create-alert');
+  alertEl.innerHTML = '';
+
+  if (!name) {
+    alertEl.innerHTML = '<div class="alert alert-error">Please enter an event name.</div>';
+    document.getElementById('event-name').focus();
+    return;
+  }
+
+  var rows = document.querySelectorAll('#slots-container .slot-row');
+  if (rows.length === 0) {
+    alertEl.innerHTML = '<div class="alert alert-error">Please add at least one time slot.</div>';
+    return;
+  }
+
+  var slots = [];
+  for (var i = 0; i < rows.length; i++) {
+    var d = rows[i].querySelector('.slot-date').value;
+    var t = rows[i].querySelector('.slot-time').value;
+    if (!d || !t) {
+      alertEl.innerHTML = '<div class="alert alert-error">Please fill in a date and time for every slot (slot ' + (i+1) + ' is incomplete).</div>';
+      return;
+    }
+    slots.push({ date: d, time: t, label: formatLabel(d, t) });
+  }
+
+  var id = makeId();
+  var eventData = { id: id, name: name, location: location, desc: desc, slots: slots, votes: {}, created: Date.now() };
+
+  var btn = document.getElementById('create-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Saving...';
+
+  fetch(API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(eventData)
+  }).then(function(res) {
+    return res.json();
+  }).then(function(data) {
+    btn.disabled = false;
+    btn.innerHTML = 'Generate My Scheduling Links ☕';
+    if (data.error) {
+      alertEl.innerHTML = '<div class="alert alert-error">Error saving event: ' + data.error + '</div>';
+      return;
+    }
+    currentEventId = id;
+    addToLocalIndex(id, name);
+
+    var voteUrl = getBaseUrl() + '?e=' + id + '&v=vote';
+    var resultsUrl = getBaseUrl() + '?e=' + id + '&v=results';
+    document.getElementById('voter-link-display').textContent = voteUrl;
+    document.getElementById('voter-link-display').setAttribute('data-results', resultsUrl);
+    document.getElementById('text-template').textContent = 'Hey! I would love to get together with you!\n\nTap the link and pick every time that could work for you:\n\n' + voteUrl + '\n\nNo app or login needed. I\'ll pick the time that works best for everyone!\n\n~ Kristin';
+    showView('links');
+  }).catch(function(err) {
+    btn.disabled = false;
+    btn.innerHTML = 'Generate My Scheduling Links ☕';
+    alertEl.innerHTML = '<div class="alert alert-error">Could not save event. Please try again.</div>';
+  });
+}
+
+function copyVoterLink() {
+  var url = document.getElementById('voter-link-display').textContent;
+  navigator.clipboard.writeText(url).then(function() {
+    document.getElementById('copy-alert').innerHTML = '<div class="alert alert-success">Voter link copied!</div>';
+    setTimeout(function() { document.getElementById('copy-alert').innerHTML = ''; }, 2500);
+  });
+}
+
+function copyResultsLink() {
+  var url = document.getElementById('voter-link-display').getAttribute('data-results');
+  navigator.clipboard.writeText(url).then(function() {
+    document.getElementById('copy-alert').innerHTML = '<div class="alert alert-success">Results link copied!</div>';
+    setTimeout(function() { document.getElementById('copy-alert').innerHTML = ''; }, 2500);
+  });
+}
+
+function copyTemplate() {
+  var text = document.getElementById('text-template').textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    document.getElementById('copy-alert').innerHTML = '<div class="alert alert-success">Text message copied!</div>';
+    setTimeout(function() { document.getElementById('copy-alert').innerHTML = ''; }, 2500);
+  });
+}
+
+function goHome() {
+  document.getElementById('event-name').value = '';
+  document.getElementById('event-location').value = '';
+  document.getElementById('event-desc').value = '';
+  document.getElementById('slots-container').innerHTML = '';
+  updateCount();
+  showView('host');
+}
+
+function loadVoter(id) {
+  currentEventId = id;
+  showView('voter');
+  document.getElementById('voter-loading').style.display = 'block';
+  document.getElementById('voter-content').style.display = 'none';
+  document.getElementById('voter-error').style.display = 'none';
+
+  fetch(API + '?id=' + id).then(function(res) {
+    if (res.status === 404) throw new Error('not found');
+    return res.json();
+  }).then(function(ev) {
+    document.getElementById('voter-loading').style.display = 'none';
+    document.getElementById('voter-content').style.display = 'block';
+    document.getElementById('voter-event-name').textContent = ev.name;
+    var descText = ev.desc || '';
+    if (ev.location) descText = (descText ? descText + '\n\n' : '') + 'Location: ' + ev.location;
+    document.getElementById('voter-event-desc').textContent = descText;
+    var html = '';
+    for (var i = 0; i < ev.slots.length; i++) {
+      html += '<div class="slot-option" data-index="' + i + '" onclick="toggleSlot(this)">';
+      html += '<div class="slot-checkbox">✓</div>';
+      html += '<div class="slot-label">' + ev.slots[i].label + '</div>';
+      html += '</div>';
+    }
+    document.getElementById('voter-slots').innerHTML = html;
+  }).catch(function() {
+    document.getElementById('voter-loading').style.display = 'none';
+    document.getElementById('voter-error').style.display = 'block';
+  });
+}
+
+function toggleSlot(el) {
+  el.classList.toggle('selected');
+}
+
+function submitVote() {
+  var name = document.getElementById('voter-name').value.trim();
+  var alertEl = document.getElementById('voter-alert');
+  if (!name) { alertEl.innerHTML = '<div class="alert alert-error">Please enter your first name.</div>'; return; }
+  var selected = document.querySelectorAll('#voter-slots .slot-option.selected');
+  if (selected.length === 0) { alertEl.innerHTML = '<div class="alert alert-error">Please pick at least one time that works for you.</div>'; return; }
+
+  var picks = [];
+  for (var i = 0; i < selected.length; i++) picks.push(parseInt(selected[i].getAttribute('data-index')));
+
+  var btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Submitting...';
+
+  // First fetch the current event, then add the vote and save it back
+  fetch(API + '?id=' + currentEventId).then(function(res) {
+    return res.json();
+  }).then(function(ev) {
+    var key = name.toLowerCase().replace(/\s+/g, '_') + '_' + Date.now();
+    ev.votes[key] = { name: name, picks: picks };
+    return fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(ev)
+    });
+  }).then(function() {
+    btn.disabled = false;
+    btn.innerHTML = 'Submit My Availability ☕';
+    document.getElementById('thanks-name').textContent = name;
+    showView('thanks');
+  }).catch(function() {
+    btn.disabled = false;
+    btn.innerHTML = 'Submit My Availability ☕';
+    alertEl.innerHTML = '<div class="alert alert-error">Something went wrong. Please try again.</div>';
+  });
+}
+
+function loadResults(id) {
+  currentEventId = id;
+  showView('results');
+  document.getElementById('results-loading').style.display = 'block';
+  document.getElementById('results-content').style.display = 'none';
+
+  fetch(API + '?id=' + id).then(function(res) {
+    if (res.status === 404) throw new Error('not found');
+    return res.json();
+  }).then(function(ev) {
+    document.getElementById('results-loading').style.display = 'none';
+    document.getElementById('results-content').style.display = 'block';
+    document.getElementById('results-event-name').textContent = ev.name;
+
+    var votes = ev.votes || {};
+    var keys = Object.keys(votes);
+    var names = [];
+    for (var i = 0; i < keys.length; i++) names.push(votes[keys[i]].name);
+
+    document.getElementById('results-voters').innerHTML = names.length === 0
+      ? '<p class="info-note">No responses yet. Share the voter link!</p>'
+      : '<p style="font-size:15px; font-weight:500;">' + names.join(', ') + '</p><p class="info-note" style="margin-top:4px;">' + names.length + ' response' + (names.length !== 1 ? 's' : '') + '</p>';
+
+    var slotTotals = [];
+    for (var s = 0; s < ev.slots.length; s++) {
+      var snames = [];
+      for (var k = 0; k < keys.length; k++) {
+        if (votes[keys[k]].picks.indexOf(s) !== -1) snames.push(votes[keys[k]].name);
+      }
+      slotTotals.push({ label: ev.slots[s].label, count: snames.length, names: snames });
+    }
+    slotTotals.sort(function(a, b) { return b.count - a.count; });
+    var max = slotTotals.length > 0 && slotTotals[0].count > 0 ? slotTotals[0].count : 1;
+
+    var html = '';
+    for (var i = 0; i < slotTotals.length; i++) {
+      var st = slotTotals[i];
+      var isWinner = i === 0 && st.count > 0;
+      var pct = Math.round((st.count / max) * 100);
+      html += '<div class="result-slot' + (isWinner ? ' winner' : '') + '">';
+      html += '<div class="vote-count">' + st.count + '</div>';
+      html += '<div class="vote-bar-wrap">';
+      html += '<div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">';
+      html += '<div class="vote-bar-label">' + st.label + '</div>';
+      if (isWinner) html += '<span class="winner-badge">Top Pick</span>';
+      html += '</div>';
+      html += '<div class="vote-bar"><div class="vote-bar-fill" style="width:' + pct + '%"></div></div>';
+      if (st.names.length > 0) html += '<div class="voter-names">' + st.names.join(', ') + '</div>';
+      html += '</div></div>';
+    }
+    document.getElementById('results-slots').innerHTML = html || '<p class="info-note">No responses yet.</p>';
+  }).catch(function() {
+    document.getElementById('results-loading').style.display = 'none';
+    document.getElementById('results-content').innerHTML = '<div class="card"><p class="info-note" style="color:#8b3030;">Event not found.</p></div>';
+    document.getElementById('results-content').style.display = 'block';
+  });
+}
+
+function removeEvent() {
+  if (!currentEventId) return;
+  if (!confirm('Delete this event? Your travelers will no longer be able to vote.')) return;
+  fetch(API + '?id=' + currentEventId, { method: 'DELETE' }).then(function() {
+    removeFromLocalIndex(currentEventId);
+    currentEventId = null;
+    goHome();
+  });
+}
+
+// INIT
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var eid = params.get('e');
+  var view = params.get('v');
+  if (eid && view === 'vote') {
+    loadVoter(eid);
+  } else if (eid && view === 'results') {
+    loadResults(eid);
+  } else {
+    addSlot();
+    showView('host');
+  }
+})();
+</script>
+</body>
+</html>
